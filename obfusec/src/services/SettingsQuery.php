@@ -32,6 +32,6 @@ return $row;
 
 public function updateSettings($params){
 
-Craft::$app->getDb()->createCommand()->update($this->table, $params, 'id=1', array(), false)->execute();
+return Craft::$app->getDb()->createCommand()->update($this->table, $params, 'id=1', array(), false)->execute();
 }
 }

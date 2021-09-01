@@ -23,7 +23,7 @@ table tbody {}
 table tbody tr {}
 table tbody tr td {}
 
-.table-action {padding:1em; border-radius:0.5em; border:1px solid #eee; margin:0 auto;}
+.table-action {padding:1em; border-radius:0.5em; border:1px solid #eee; margin:0 auto; background-color:#69b00b; color:#ffffff;}
 
 {% endcss %}
 
@@ -135,7 +135,7 @@ search_params=$(this).val();
 searchQuery(search_params, search_page);
 });
 
-$(".table-action").on("click", function(e){
+$("body").on("click", ".table-action", function(e){
 
 csrf_token = $(".table-pathbrowser input[name=CRAFT_CSRF_TOKEN]").val();
 tr = $(this).parent("td").parent("tr");
@@ -233,8 +233,10 @@ alert("error");
 <div class="page-info"><span id="user_range">1-10</span>  of <span id="user_count">{{ data.users_count }}</span> users</div>
 </div>
 </div>
+<!--
 <button id="deleteall-btn" class="btn" type="button">Delete All</button>
 <button id="export-btn" class="btn" type="button">Export</button>
+-->
 </div>
 
 </div>

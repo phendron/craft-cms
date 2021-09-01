@@ -37,6 +37,18 @@
 {% block content %}
 {{ csrfInput() }}
 <input type="hidden" name="action_request" value="test-plugin-save-settings" />
+
+{% if settings.save_request == true %}
+<div class="flex flex-nowrap settings-msg {% if settings.save_error == false %} no-error-msg {% endif %} {% if settings.save_error == true %} error-msg {% endif %}">
+{% if settings.save_error == false %}
+<p>Saved.</p>
+{% endif %}
+{% if settings.save_error == true %}
+<p>There was an error in the settings.</p>
+{% endif %}
+</div>
+{% endif %}
+
 <h1>Url Routes &amp; Paths</h1>
 
 {% import "_includes/forms" as forms %}
@@ -62,19 +74,25 @@
 
 {% css %}
 
-switchbox {display:inline-flex; width:inherit; border:1px solid #202020; border-radius:0.5em;}
-switchbox switch {display:block; padding:1em; background-color:#0000ff; color:#ffffff; border-radius:0.5em;}
-switchbox switch[on=true] {background-color:#202020;}
-switchbox switch[on=false] {background-color:#0000ff;}
+switchbox {display:inline-flex; width:inherit; border:1px solid #e8e8e8; border-radius:0.5em; margin-left:1em;}
+switchbox switch {display:block; padding:1em; background-color:#0000ff; color:#ffffff; border-radius:0.5em; marhin:0; padding-left:1.5em; padding-right:1.5em; text-transform:capitalize;}
+switchbox switch[on=true] {background-color:#69b00b;}
+switchbox switch[on=false] {background-color:#e8e8e8; color:#c4c4c4;}
+switchbox switch:nth-child(1) {border-top-right-radius:0; border-bottom-right-radius:0;}
+switchbox switch:nth-child(2) {border-top-left-radius:0; border-bottom-left-radius:0;}
 
+.action-btn {padding:1em; border-radius:0.5em; border:1px solid #eee; color:#ffffff; background-color:#69b00b;}
 
-.action-btn {padding:1em; border-radius:0.5em; border:1px solid #eee;}
+.settings-msg {border-radius:0.5em; color:#fff; padding:1em; margin-bottom:1em;}
+
+.error-msg {border: 1px #d93654 solid; background-color:#f25572;}
+.no-error-msg {background-color:#69b00b;}
+
 {% endcss %}
 
 {% js %}
 
 $(function(){
-
 
 $(".re-initialize-users").on("click", function(e){
 e.preventDefault();
@@ -101,6 +119,8 @@ init_user_count+=1;
 
 $(".initialize-users").on("click", function(e){
 e.preventDefault();
+
+if($(this).hasClass("disabled")){return false;}
 
 var csrf_token=$("input[name=CRAFT_CSRF_TOKEN]").val();
 $.post("craft-obfusec/controlpanel/uninitializedusers",{CRAFT_CSRF_TOKEN:csrf_token},function(msg){
@@ -170,7 +190,7 @@ $(this).attr("on", true);
 <br>
 <h1>Initialize Users</h1>
 <div class="flex flex-nowrap">
-<button class="initialize-users action-btn">Initialize All Unitialized Users</button>
+<button class="initialize-users action-btn {% if settings.unauthorized_users == settings.authorized_users %} disabled {% endif %}">Initialize All Unitialized Users</button>
 <div id="initialize-users-info">
  - <span class="initialized">0</span> out of <span class="initialize-total">{{ settings.unauthorized_users }}</span>
 </div>

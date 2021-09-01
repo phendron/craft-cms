@@ -26,9 +26,10 @@ $update_row = array(
     'unique_urls_active'=>Craft::$app->request->getBodyParam('unique_urls_active')
 );
 
+// TODO:: add settings validation;
 
 $updated = CraftObfusec::getInstance()->settingsquery->updateSettings($update_row);
-if(!$updated){
+if($updated<1){
 $save_error=true;
 }
 }
