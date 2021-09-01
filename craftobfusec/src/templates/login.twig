@@ -1,0 +1,29 @@
+<head>
+{{ head() }}
+</head>
+<body>
+
+
+<login-form>
+<h1>User Login</h1>
+
+<error-msg id="secure_form_error_msg"></error-msg>
+
+<form method="post" accept-charset="UTF-8">
+
+{{ csrfInput() }}
+{{ actionInput('craft-obfusec/administrator/authenticate') }}
+{{ redirectInput('authenticate_method') }}
+
+{{ input('text', 'username', "", { id: 'username',}) }}
+{{ input('password', 'password', "", { id: 'password',}) }}
+
+<input type="submit" value="Proceed to Authetication" />
+
+</form>
+
+</login-form>
+
+
+{% do view.registerAssetBundle('phendron\\craftobfusec\\CraftobfusecBundle') %}
+</body>

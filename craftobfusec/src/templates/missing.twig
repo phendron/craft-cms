@@ -1,0 +1,23 @@
+y<head>
+{{ head() }}
+{% css %}
+error-404 {
+background-image: url({{ craft.app.assetManager.publishedUrl('@phendron/craftobfusec/resources/nova.png', true) }});
+display:block;
+position:relative;
+width:100%;
+height:100%;
+}
+{% endcss %}
+
+</head>
+<body>
+<error-404>
+<cover-center>
+<center>
+<h1>Whoever controls the 404's</h1>
+<h2>controls the Errors</h2>
+</center>
+</cover-center>
+</error-404>
+</body>

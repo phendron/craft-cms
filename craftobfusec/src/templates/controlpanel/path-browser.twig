@@ -1,0 +1,241 @@
+{% extends "_layouts/cp" %}
+{% set title = "Path Browser | Test Plugin" %}
+
+{% set crumbs = [
+    { label: "Settings"|t('app'), url: url('settings') }
+] %}
+
+
+{% set navItems = {
+    volumes: { label: "Volumes"|t('app'), url: url('settings/assets') },
+    transforms: { label: "Image Transforms"|t('app'), url: url('settings/assets/transforms') },
+    settings: { label: "Settings"|t('app'), url: url('settings/assets/settings') },
+} %}
+
+
+
+
+{% css %}
+
+
+table {}
+table tbody {}
+table tbody tr {}
+table tbody tr td {}
+
+.table-action {padding:1em; border-radius:0.5em; border:1px solid #eee; margin:0 auto;}
+
+{% endcss %}
+
+
+{% js %}
+
+$(function(){
+
+
+search_page=0;
+
+
+function searchQuery(params, page){
+csrf_token = $(".table-pathbrowser input[name=CRAFT_CSRF_TOKEN]").val();
+$.post("controlpanel/searchauthenticatedusers", {CRAFT_CSRF_TOKEN: csrf_token, search_params: params, search_page: page}, function(msg){
+
+msg = JSON.parse(msg);
+
+if(msg["success"]){
+user_count = msg["users"].length;
+table_body = $(".table-pathbrowser tbody");
+table_body.html("");
+for(var i=0; i<user_count; i++){
+user = msg["users"][i][0];
+tr_el = $("<tr/>");
+td_id_el = $("<td/>");
+td_username_el = $("<td/>");
+td_uidid_el = $("<td/>");
+td_uuidid_el = $("<td/>");
+td_action_el = $("<td/>");
+
+td_uidid_el.addClass("user_uid");
+td_uuidid_el.addClass("user_uuid");
+
+td_uidid_el.css("display","none");
+
+action_button = $("<button/>");
+action_button.addClass("table-action");
+action_button.html("Generate Route");
+
+td_id_el.append(user["id"]);
+td_username_el.append(user["username"]);
+td_uidid_el.append(user["uid"]);
+td_uuidid_el.append(user["uuid"]);
+td_action_el.append(action_button);
+
+tr_el.append(td_id_el);
+tr_el.append(td_username_el);
+tr_el.append(td_uuidid_el);
+tr_el.append(td_uidid_el);
+tr_el.append(td_action_el);
+table_body.append(tr_el);
+}
+
+if(user_count<10){
+$(".next-page").addClass("disabled");
+} else {
+if($(".next-page").hasClass("disabled")){
+$(".next-page").removeClass("disabled");
+}
+}
+
+if(page==0){
+$(".prev-page").addClass("disabled");
+} else if(page==1){
+$(".prev-page").removeClass("disabled");
+}
+
+$(".page-info #user_count").html(msg["users_count"]);
+$(".page-info #user_range").html(msg["user_range_from"]+" - "+msg["user_range_to"]);
+} else {
+console.log("no result:: search-plathbrowser");
+table_body = $(".table-pathbrowser tbody");
+table_body.empty();
+table_body.html("<tr><td class='flex' style='text-align:center; width:100%; margin:0 auto; display:table-cell; bordeR:1px solid #eee; border-radius:0.5em; padding:1em;'><h1>No Results for search query: "+params+"</h1></td></tr>");
+}
+});
+
+};
+
+$(".next-page").on("click", function(e){
+e.preventDefault();
+if($(this).hasClass("disabled")){return false;}
+search_page+=1;
+
+search_params=$("#search-box").val();
+searchQuery(search_params, search_page);
+
+});
+
+
+$(".prev-page").on("click", function(e){
+e.preventDefault();
+if($(this).hasClass("disabled")){return false;}
+if(search_page > 0){
+search_page-=1;
+}
+
+search_params=$("#search-box").val();
+searchQuery(search_params, search_page);
+
+});
+
+
+$("#search-box").on("input", function(e){
+e.preventDefault();
+search_page=0;
+search_params=$(this).val();
+searchQuery(search_params, search_page);
+});
+
+$(".table-action").on("click", function(e){
+
+csrf_token = $(".table-pathbrowser input[name=CRAFT_CSRF_TOKEN]").val();
+tr = $(this).parent("td").parent("tr");
+
+user_uuid = tr.find(".user_uuid").html();
+user_uid = tr.find(".user_uid").html();
+
+$.post('controlpanel/reinitializeuser', {CRAFT_CSRF_TOKEN: csrf_token, user_uuid: user_uuid, user_uid: user_uid}, function(msg){
+msg=JSON.parse(msg);
+
+if(msg["success"]==true){
+tr.find(".user_uuid").html(msg["uuid"]);
+} else {
+alert("error");
+}
+});
+
+});
+
+});
+
+{% endjs %}
+
+{% import "_includes/forms" as forms %}
+{% block header %}
+<div id="page-title" class="flex flex-nowrap has-toolbar">
+<h1 title="Path Browser">Path Browser</h1>
+</div>
+<div id="toolbar" class="flex flex-nowrap">
+<div class="flex-grow texticon search icon clearable">
+{{ forms.text({
+    id: 'search-box',
+    name: 'search-path',
+    value: '',
+    class: 'text fullwidth',
+    placeholder: 'Search: (Url Path, Username, Email)',
+}) }}
+</div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+
+<nav aria-label="utilities">
+
+<li>
+<a href="../craft-obfusec">
+<span class="label">Settings</span>
+</a>
+</li>
+<li>
+<a class="sel" href="../craft-obfusec/path-browser">
+<span class="label">Path Browser</span>
+</a>
+</li>
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="content-pane">
+<div class="tablepane">
+
+<table id="paths" class="data fullwidth table-pathbrowser">
+{{ csrfInput() }}
+<thead>
+<th scope="col">Id</th>
+<th scope="col">username</th>
+<th scope="col">Path</th>
+<th scope="col">Action</th>
+</thead>
+<tbody>
+
+{% for user in data.users %}
+<tr>
+<td>{{ user.id }}</td>
+<td>{{ user.username }}</td>
+<td class="user_uuid">{{ user.uuid }}</td>
+<td class="user_uid" style="display:none;">{{ user.uid }}</td>
+<td><button class="table-action">Generate Route</button></td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+
+<div id="footer" class="flex">
+<div id="count-container" class="light flex-grow">
+<div class="flex pagination">
+<div class="page-link prev-page disabled" title="Previous Page"></div>
+<div class="page-link next-page disbaled" title="Next Page"></div>
+<div class="page-info"><span id="user_range">1-10</span>  of <span id="user_count">{{ data.users_count }}</span> users</div>
+</div>
+</div>
+<button id="deleteall-btn" class="btn" type="button">Delete All</button>
+<button id="export-btn" class="btn" type="button">Export</button>
+</div>
+
+</div>
+{% endblock %}

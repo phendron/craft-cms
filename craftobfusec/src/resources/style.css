@@ -1,0 +1,21 @@
+html {}
+body {}
+
+
+login-form {margin:auto; margin-top:1em; display:block; width:33.3%; padding:1em; border-radius:1em; background:#fff; border-color:#eee;}
+
+login-form h1 {text-align:center;}
+
+login-form form {width:100%;}
+
+login-form form input {width:100%; margin-bottom:0.5em; margin-top:0.5em; padding:0.5em;}
+
+
+error-msg {color:#fff; background-color:eb4034; border: 1px solid #ba2a20; padding:1em; border-radius:0.5em; display:none;}
+
+
+error-404 {display:block; width:100%; height:100%; position:relative;}
+error-404 cover-center {position:relative; width:100%; height:100%; display:block; background-color:rgba(0,0,0,0.5);}
+error-404 cover-center center {position:absolute; display:block; margin:0; top:50%; left:50%; -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%);}
+error-404 cover-center center h1 {padding:1em; text-align:center; color:#fff; margin:auto; font-size:2em; background-color:rgba(0,0,0,0.5); display:block; margin-bottom:0.5em; border-radius:0.5em;}
+error-404 cover-center center h2 {padding:1em; text-align:center; color:#fff; margin:auto; font-size:2em; background-color:rgba(0,0,0,0.5); display:block; width:auto; margin-top:0.5em; border-radius:0.5em;}

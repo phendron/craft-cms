@@ -1,0 +1,186 @@
+{% extends "_layouts/cp" %}
+{% set title = "Settings | Test Plugin" %}
+{% set fullPageForm = true %}
+{% set crumbs = [
+    { label: "Settings"|t('app'), url: url('settings') }
+] %}
+
+
+{% set navItems = {
+    volumes: { label: "Volumes"|t('app'), url: url('settings/assets') },
+    transforms: { label: "Image Transforms"|t('app'), url: url('settings/assets/transforms') },
+    settings: { label: "Settings"|t('app'), url: url('settings/assets/settings') },
+} %}
+
+
+
+{% block sidebar %}
+
+<nav aria-label="utilities">
+
+<li>
+<a class="sel" href="craft-obfusec">
+<span class="label">Settings</span>
+</a>
+</li>
+<li>
+<a href="craft-obfusec/path-browser">
+<span class="label">Path Browser</span>
+</a>
+</li>
+</nav>
+
+{% endblock %}
+
+
+
+{% block content %}
+{{ csrfInput() }}
+<input type="hidden" name="action_request" value="test-plugin-save-settings" />
+<h1>Url Routes &amp; Paths</h1>
+
+{% import "_includes/forms" as forms %}
+{{ forms.textField({
+    first: true,
+    label: "Admin Secure Login Path (Route)",
+    name: 'secure_route',
+    value: settings.secure_route
+}) 
+
+}}
+
+
+{{ forms.textField({
+    first: true,
+    label: "Default Global Path",
+    name: 'global_default_route',
+    value: settings.global_default_route
+})
+
+}}
+
+
+{% css %}
+
+switchbox {display:inline-flex; width:inherit; border:1px solid #202020; border-radius:0.5em;}
+switchbox switch {display:block; padding:1em; background-color:#0000ff; color:#ffffff; border-radius:0.5em;}
+switchbox switch[on=true] {background-color:#202020;}
+switchbox switch[on=false] {background-color:#0000ff;}
+
+
+.action-btn {padding:1em; border-radius:0.5em; border:1px solid #eee;}
+{% endcss %}
+
+{% js %}
+
+$(function(){
+
+
+$(".re-initialize-users").on("click", function(e){
+e.preventDefault();
+
+var csrf_token=$("input[name=CRAFT_CSRF_TOKEN]").val();
+$.post("craft-obfusec/controlpanel/getallusers",{CRAFT_CSRF_TOKEN:csrf_token},function(msg){
+rdata=JSON.parse(msg);
+csrf_token=rdata["CRAFT_CSRF_TOKEN"];
+initialized_user_el=$("#re-initialize-users-info .initialized");
+initialize_user_el=$("#re-initialize-users-info .initialize-total");
+initialize_user_el.html(rdata["users"].length);
+init_user_count=1
+for(var i = 0; i < rdata["users"].length; i++){
+$.post("craft-obfusec/controlpanel/reinitializeuser",{CRAFT_CSRF_TOKEN:csrf_token,user_uid:rdata["users"][i]["uid"],user_uuid:rdata["users"][i]["uuid"]},function(msg){
+initialized_user_el.html(init_user_count);
+init_user_count+=1;
+});
+
+}
+
+});
+});
+
+
+$(".initialize-users").on("click", function(e){
+e.preventDefault();
+
+var csrf_token=$("input[name=CRAFT_CSRF_TOKEN]").val();
+$.post("craft-obfusec/controlpanel/uninitializedusers",{CRAFT_CSRF_TOKEN:csrf_token},function(msg){
+rdata=JSON.parse(msg);
+csrf_token=rdata["CRAFT_CSRF_TOKEN"];
+initialized_user_el=$("#initialize-users-info .initialized");
+initialize_user_el=$("#initialize-users-info .initialize-total");
+initialize_user_el.html(rdata["users"].length);
+for(var i = 0; i < rdata["users"].length; i++){
+$.post("craft-obfusec/controlpanel/initializeuser",{CRAFT_CSRF_TOKEN:csrf_token,user_id:rdata["users"][i]},function(msg){
+initialized_user_el.html(i+1);
+});
+
+}
+
+});
+});
+
+$(".switchbox").find(".switch").on("click", function(e){
+
+var value = $(this).attr("value");
+var switchbox = $(this).parent(".switchbox");
+var switchbox_link = switchbox.attr("linked");
+var switchbox_input = $("#"+switchbox_link);
+
+
+switch_value="1";
+if(value=="false"){
+switch_value="0";
+}
+if($(this).attr("on")=="false"){
+
+switchbox_input.val(switch_value);
+switchbox.find(".switch[on=true]").attr("on", false);
+$(this).attr("on", true);
+
+}
+
+
+
+});
+
+});
+
+{% endjs %}
+
+<h1>User Urls &amp; Initialization</h1>
+<div>
+<label><b>Active / De-Activate:   </b></label>
+<switchbox class="switchbox" linked="unique_user_urls">
+{% if settings.unique_urls_active == "1" %}
+<switch class="switch" on="true" value="true">on</switch>
+<switch class="switch" on="false" value="false">off</switch>
+{% elseif settings.unique_urls_active == "0" %}
+<switch class="switch" on="false" value="true">on</switch>
+<switch class="switch" on="true" value="false">off</switch>
+{% endif %}
+</switchbox>
+
+<input id="unique_user_urls" type="hidden" name="unique_urls_active" value="{{ settings.unique_urls_active }}" />
+</div>
+<br>
+<h1>Initialized Users</h1>
+<div>
+<p>{{ settings.authorized_users }} Initialized Users out of {{ settings.unauthorized_users }}</p>
+</div>
+<br>
+<h1>Initialize Users</h1>
+<div class="flex flex-nowrap">
+<button class="initialize-users action-btn">Initialize All Unitialized Users</button>
+<div id="initialize-users-info">
+ - <span class="initialized">0</span> out of <span class="initialize-total">{{ settings.unauthorized_users }}</span>
+</div>
+</div>
+<br>
+<h1>Re-Initialize All Users</h1>
+<div class="flex flex-nowrap">
+<button class="re-initialize-users action-btn">Re-Initialize All Users</button>
+<div id="re-initialize-users-info">
+ - <span class="initialized">0</span> out of <span class="initialize-total">{{ settings.unauthorized_users }}</span>
+</div>
+</div>
+{% endblock %}

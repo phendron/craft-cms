@@ -1,0 +1,47 @@
+{
+    "name": "phendron/craft-obfusec",
+    "description": "Obfusec secures the craft cms control panel via custom addressing & per user URL Buckets.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "test plugin"
+    ],
+    "support": {
+        "docs": "???",
+        "issues": "???"
+    },
+    "hasCpSettings":true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Patrick Hendron",
+            "homepage": "Me@me.me"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "require-dev": {
+      "craftcms/cms": "^3.2.0",
+      "codeception/codeception": "^3.0",
+      "vlucas/phpdotenv": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "phendron\\craftobfusec\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Obfusec",
+        "handle": "craft-obfusec",
+        "developer": "Me",
+        "developerUrl": "github.com/phendron",
+        "documentationUrl": "???",
+        "changelogUrl": "???",
+        "class": "phendron\\craftobfusec\\CraftObfusec"
+    }
+}
