@@ -17,7 +17,8 @@
 
 {{ input('text', 'username', "", { id: 'username',}) }}
 {{ input('password', 'password', "", { id: 'password',}) }}
-
+<label for="rememberme">Remember Me:</label>
+{{ input('checkbox', 'rememberme', "", {id: 'rememberme'}) }}
 <input type="submit" value="Proceed to Authetication" />
 
 </form>

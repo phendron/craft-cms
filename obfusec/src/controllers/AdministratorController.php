@@ -70,6 +70,7 @@ $duration = $generalConfig->userSessionDuration;
 
 if($userSession->login($user, $duration)){
 $request["success"]=true;
+$request["redirect"]=UrlHelper::cpUrl();
 }
 }
 }

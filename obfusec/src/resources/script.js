@@ -11,7 +11,6 @@ secure_form_submit_el.on("click", function(e){
 e.preventDefault();
 
 data = secure_form_el.serialize();
-console.log(data)
 $.post(secure_form_action.val(), data, function(rdata){
 rdata = JSON.parse(rdata);
 request_error=false;
@@ -29,6 +28,11 @@ secure_form_error_el.hide();
 }
 }
 
+if("success" in rdata){
+if(rdata["success"] == true){
+window.location.replace(rdata["redirect"]);
+} else {console.log("success: "+rdata);}
+} else {console.log("no-key");}
 });
 
 });
