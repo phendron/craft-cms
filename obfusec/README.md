@@ -1,6 +1,6 @@
-# Test Plugin plugin for Craft CMS 3.x
+# Obfusec plugin for Craft CMS 3.x
 
-This is a Test Plugin
+Adminsitrative Authentication Obfuscation Security Related Plugin.
 
 ![Screenshot](resources/img/plugin-logo.png)
 
@@ -18,26 +18,47 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require /test-plugin
+        composer require phendron/craft-obfusec
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Test Plugin.
 
-## Test Plugin Overview
+## Obfusec Plugin Overview
 
--Insert text here-
+Description: The Plugin allows admin control panel login request to be obfuscated through unique secure routes on a single or all user basis.
 
-## Configuring Test Plugin
+## Configuring Obfusec Plugin
 
--Insert text here-
+##-Insert text here-
 
-## Using Test Plugin
+## Using Obfusec Plugin
 
--Insert text here-
+-- Obfusec Settings Page --
 
-## Test Plugin Roadmap
+** Admin Secure Login Path (Route): define the initial route path for all users e.g. example.com/admin/[secure_route]
+
+** Default Global Path: defines the initial default route path after all users when {User Urls & Initialization}==off. e.g. example.com/admin/[secure_route]/[default_route]/
+
+** Initial Users (Action Button): Generates Unique secure routess for all Uninitialized Users these secure routes are available in the sidebar menu as {Path Browser}.
+
+** Re-Initialize All Users (Action Button): Re-Generates Unique secure routes for all Users also avail int he sidebar menu in {Path Browser}.
+
+-- Obfusec Path Browser Page --
+
+Description: The Path Browser page allows searching for usernames, emails & secure routes.
+
+** Re-Generate Route (Action Button): Each Secure Path Entry has a button on the right side of the table that allows Re-Generation of Secure Routes to Issue new routes on per user basis.
+
+
+## Obfusec Plugin Roadmap
 
 Some things to do, and ideas for potential features:
 
 * Release it
 
-Brought to you by [Me](Me@me.me)
+-- ISSUES --
+
+* Add Admin Login Redirects to Dashboard.
+* Add user notification of issued routes / new routes.
+* Add Error handling on forms.
+* Enhance Style.
+Brought to you by [Patrick Hendron](https://github.com/phendron)
